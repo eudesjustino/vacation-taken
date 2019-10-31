@@ -1,6 +1,13 @@
 const express = require("express");
 const app = express();
+const path =  require('path');
 const bodyParser = require("body-parser");
+
+app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(__dirname, 'public/views'));
+app.engine('.html', require('ejs').__express);
+
 
 const userRoutes = require('./routes/user-router');
 
