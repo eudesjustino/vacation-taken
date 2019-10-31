@@ -2,8 +2,7 @@ package com.br.hrxpto.vacation.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,8 @@ public class VacationRepositoryTest {
 		Employee employee = new Employee();
 		employee.setId(Long.valueOf(1));
 		vacation.setEmployee(employee );
-		vacation.setStartDate(new Date());
-		vacation.setEndDate(new Date());
+		vacation.setStartDate(LocalDate.now());
+		vacation.setEndDate(LocalDate.now());
 		Vacation save = repository.save(vacation);
 		Optional<Vacation> data = repository.findById(save.getId());
 		assertThat(data.get().getId()).isEqualTo(save.getId());				
@@ -57,20 +56,15 @@ public class VacationRepositoryTest {
 		Optional<Vacation> data = repository.findById(Long.valueOf(1));
 		assertThat(data.isPresent()).isTrue();
 		Vacation vacation = data.get();
-		Date endDate = vacation.getEndDate();
-		vacation.setEndDate(new Date());
+		LocalDate endDate = vacation.getEndDate();
+		vacation.setEndDate(LocalDate.now());
 		Vacation save = repository.save(vacation);
 		data = repository.findById(Long.valueOf(1));
-		assertThat(save.getEndDate().getTime()).isGreaterThan(endDate.getTime());
+		assertThat(save.getEndDate().isAfter(endDate)).isTrue();
 		
 	}
 	
-	@Test
-	public void mustFindAllVacation() {
-		 List<Vacation> data = repository.findAll();
-		 assertThat(data.size()).isEqualTo(3);
-	}
-	
+		
 	@Test
 	public void mustFindByIdAnVacation() {
 		Optional<Vacation> data = repository.findById(Long.valueOf(1));

@@ -1,6 +1,7 @@
 package com.br.hrxpto.vacation.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.hrxpto.vacation.exception.InvalidCredentialsException;
 import com.br.hrxpto.vacation.model.User;
 import com.br.hrxpto.vacation.service.UserService;
 import com.br.hrxpto.vacation.util.JwtTokenUtil;
@@ -44,9 +46,9 @@ public class AuthenticationController {
 	}
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public ResponseEntity<?> saveUser(@RequestBody User user) throws Exception {
+	public ResponseEntity<String> saveUser(@RequestBody User user) throws Exception {
 		userDetailsService.save(user);
-		return ResponseEntity.ok().build();
+		return new ResponseEntity<>("User cadastre success!", HttpStatus.OK);
 	}
 
 	private void authenticate(String username, String password) throws Exception {
@@ -55,7 +57,7 @@ public class AuthenticationController {
 		} catch (DisabledException e) {
 			throw new Exception("USER_DISABLED", e);
 		} catch (BadCredentialsException e) {
-			throw new Exception("INVALID_CREDENTIALS", e);
+			throw new InvalidCredentialsException("User Credential is Invalid");
 		}
 	}
 

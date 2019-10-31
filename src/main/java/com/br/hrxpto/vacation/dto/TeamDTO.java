@@ -1,24 +1,15 @@
-package com.br.hrxpto.vacation.model;
+package com.br.hrxpto.vacation.dto;
 
 import java.io.Serializable;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * @author eudes.justino
  *
  */
-@Entity
-@Table(name = "team")
-public class Team implements Serializable{	
+
+public class TeamDTO implements Serializable{	
 	
-	private static final long serialVersionUID = 1L;
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	private static final long serialVersionUID = 1L;	
 	private Long id;
 	private String name;
 	
@@ -49,7 +40,7 @@ public class Team implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Team other = (Team) obj;
+		TeamDTO other = (TeamDTO) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

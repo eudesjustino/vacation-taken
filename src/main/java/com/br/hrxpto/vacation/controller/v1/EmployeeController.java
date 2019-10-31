@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.hrxpto.vacation.converter.EmployeeConverter;
+import com.br.hrxpto.vacation.dto.EmployeeDTO;
 import com.br.hrxpto.vacation.exception.HiringException;
 import com.br.hrxpto.vacation.model.Employee;
 import com.br.hrxpto.vacation.service.EmployeeService;
@@ -34,27 +36,33 @@ public class EmployeeController {
 
 	@Autowired
 	private EmployeeService employeeService;
+	@Autowired
+	private EmployeeConverter converter;
 
 	@PostMapping
-	public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) throws HiringException {
-		Employee employeeCreate = employeeService.createUpdate(employee);
-		return new ResponseEntity<Employee>(employeeCreate, new HttpHeaders(), HttpStatus.OK);
+	public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO employeeDTO) throws HiringException {		
+		Employee employee = converter.convert(employeeDTO);		
+		Employee employeeCreate = employeeService.save(employee);
+		EmployeeDTO employeDTOConverter = converter.convert(employeeCreate);
+		return new ResponseEntity<EmployeeDTO>(employeDTOConverter, new HttpHeaders(), HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<Employee> updateEmployee(@PathVariable long id, @RequestBody Employee employee) throws HiringException {
+	public ResponseEntity<EmployeeDTO> updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) throws HiringException {
+		Employee employee = converter.convert(employeeDTO);	
 		employee.setId(id);
-		Employee employeeCreate = employeeService.createUpdate(employee);
-		return new ResponseEntity<Employee>(employeeCreate, new HttpHeaders(), HttpStatus.OK);
+		Optional<Employee> employeeFind = employeeService.findById(id);
+		employee.setRegistration(employeeFind.get().getRegistration());
+		Employee employeeCreate = employeeService.update(employee);
+		EmployeeDTO employeDTOConverter = converter.convert(employeeCreate);
+		return new ResponseEntity<EmployeeDTO>(employeDTOConverter, new HttpHeaders(), HttpStatus.OK);
+		
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteEmployee(@PathVariable long id) {
-		Optional<Employee> employee = employeeService.findById(id);
-		if (employee.isPresent()) {
-			employeeService.delete(employee.get());
-		}
-		return ResponseEntity.ok().build();
+	public ResponseEntity<String>  deleteEmployee(@PathVariable Long id) {
+		employeeService.delete(id);	
+		return new ResponseEntity<>("Employee deleted successfully!", HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")

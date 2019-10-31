@@ -1,9 +1,8 @@
 package com.br.hrxpto.vacation.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
-import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,12 +13,15 @@ import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * @author eudes.justino
  *
  */
 @Entity
-@Table(name = "employee",indexes = {@Index(name = "IDX_01Employee", columnList = "id,registration")})
+@Table(name = "employee",indexes = {@Index(name = "IDX_01Employee", columnList = "registration",unique = true)})
+@JsonIgnoreProperties(allowSetters = false)
 public class Employee implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -27,11 +29,11 @@ public class Employee implements Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String registration;
-	private String name;
-	private Date birhthDate;
+	private String name;	
+	private LocalDate birhthDate;
 	@Embedded
-	private Address address;
-	private Date hiringDate;
+	private Address address;	
+	private LocalDate hiringDate;
 	@Lob
     private byte[] photo;
 	@OneToOne
@@ -48,7 +50,7 @@ public class Employee implements Serializable {
 	public String getRegistration() {
 		return registration;
 	}
-
+	
 	public void setRegistration(String registration) {
 		this.registration = registration;
 	}
@@ -61,11 +63,11 @@ public class Employee implements Serializable {
 		this.name = name;
 	}
 
-	public Date getBirhthDate() {
+	public LocalDate getBirhthDate() {
 		return birhthDate;
 	}
 
-	public void setBirhthDate(Date birhthDate) {
+	public void setBirhthDate(LocalDate birhthDate) {
 		this.birhthDate = birhthDate;
 	}
 
@@ -77,11 +79,11 @@ public class Employee implements Serializable {
 		this.address = address;
 	}
 
-	public Date getHiringDate() {
+	public LocalDate getHiringDate() {
 		return hiringDate;
 	}
 
-	public void setHiringDate(Date hiringDate) {
+	public void setHiringDate(LocalDate hiringDate) {
 		this.hiringDate = hiringDate;
 	}
 

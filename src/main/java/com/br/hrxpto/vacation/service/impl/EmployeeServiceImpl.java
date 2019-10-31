@@ -1,19 +1,14 @@
 package com.br.hrxpto.vacation.service.impl;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import com.br.hrxpto.vacation.exception.HiringException;
 import com.br.hrxpto.vacation.model.Employee;
 import com.br.hrxpto.vacation.repository.EmployeeRepository;
 import com.br.hrxpto.vacation.service.EmployeeService;
@@ -25,25 +20,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private EmployeeRepository employeeRepository;
 	
 	@Override
-	public Employee createUpdate(Employee employee) throws HiringException {
-       validateHiringTime(employee);
-	   return employeeRepository.save(employee);
-	}
-
-	private void validateHiringTime(Employee employee) throws HiringException {
-		Date hiringDate = employee.getHiringDate();
-		Temporal dt = hiringDate.toInstant()
-			      .atZone(ZoneId.systemDefault())
-			      .toLocalDate();
-		if(ChronoUnit.MONTHS.between(dt , LocalDate.now())<1) {
-			throw new HiringException("Employee cannot apply for vacations before 1 year of hiring");
-		}
-		
+	public Employee update(Employee employee) {
+		return employeeRepository.save(employee);
 	}
 
 	@Override
-	public void delete(Employee employee) {
-		employeeRepository.delete(employee);
+	public Employee save(Employee employee) {
+		String registration = generateRegistration();
+		employee.setRegistration(registration);
+		return employeeRepository.save(employee);
+	}
+
+	private String generateRegistration() {
+		String[] split = UUID.randomUUID().toString().split("-");
+		String registratio = split[0] + split[1] + split[2] + split[3] + split[4];
+		return registratio.substring(3, 12);
+	}
+
+	@Override
+	public void delete(Long id) {
+		employeeRepository.deleteById(id);
 	}
 
 	@Override
@@ -64,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public List<Employee> employeesRequestVacation(int month) {
 		return employeeRepository.employeesLastVacation(month);
-		
+
 	}
 
 }

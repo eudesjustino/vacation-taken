@@ -1,4 +1,4 @@
-package com.br.hrxpto.vacation.model;
+package com.br.hrxpto.vacation.dto;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "user",indexes = {@Index(name = "IDX_01User", columnList = "username",unique = true)})
-public class User implements Serializable{
+public class UserDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	@Id
@@ -20,7 +20,7 @@ public class User implements Serializable{
 	private String username;	
 	private String password;
 	
-	public User() {
+	public UserDTO() {
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -58,7 +58,7 @@ public class User implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
+		UserDTO other = (UserDTO) obj;
 		if (id != other.id)
 			return false;
 		if (username == null) {

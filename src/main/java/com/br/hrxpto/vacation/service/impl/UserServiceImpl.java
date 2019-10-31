@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.br.hrxpto.vacation.exception.ExistingCredentialsException;
 import com.br.hrxpto.vacation.model.User;
 import com.br.hrxpto.vacation.repository.UserRepository;
 import com.br.hrxpto.vacation.service.UserService;
@@ -22,8 +23,11 @@ public class UserServiceImpl implements UserService{
 	private PasswordEncoder bcryptEncoder;
 
 	@Override
-	public User save(User user) {
-		
+	public User save(User user) throws ExistingCredentialsException {
+	  Optional<User> findUser = repository.findByUsername(user.getUsername());
+	  if(findUser.isPresent()) {
+		  throw new ExistingCredentialsException("there is a registered user withn 'username': "+user.getUsername());
+	  }
 	  String keyCripto = bcryptEncoder.encode(user.getPassword());
 	  user.setPassword(keyCripto);
 	  return repository.save(user);
@@ -37,7 +41,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		 Optional<User> user = repository.findByUsername(username);
-		 if(user.isEmpty()) {
+		 if(!user.isPresent()) {
 			 throw new UsernameNotFoundException("User not found with username: " + username);
 		 }
 		 
