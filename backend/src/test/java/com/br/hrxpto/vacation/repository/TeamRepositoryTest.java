@@ -19,8 +19,8 @@ import com.br.hrxpto.vacation.model.Team;
 
 @ActiveProfiles("qa")
 @RunWith(SpringRunner.class)
-@Sql(value = "/load-database-employee.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = "/clean-database-employee.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = "/load-database-team.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "/clean-database-team.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 public class TeamRepositoryTest {
